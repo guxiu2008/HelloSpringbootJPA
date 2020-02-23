@@ -3,6 +3,7 @@ package com.guxiu2008.hellospringbootjpa.pojo;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
@@ -19,6 +20,7 @@ public class BookPojo {
     private Integer id;
     private String name;
     private Integer userid;
+    private Timestamp date;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -63,5 +65,15 @@ public class BookPojo {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, userid);
+    }
+
+    @Basic
+    @Column(name = "date", nullable = true)
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
 }
