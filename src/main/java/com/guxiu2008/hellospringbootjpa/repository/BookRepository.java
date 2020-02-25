@@ -1,5 +1,6 @@
 package com.guxiu2008.hellospringbootjpa.repository;
 
+import com.guxiu2008.hellospringbootjpa.base.repository.BaseRepository;
 import com.guxiu2008.hellospringbootjpa.pojo.BookPojo;
 import com.guxiu2008.hellospringbootjpa.pojo.UserPojo;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,6 @@ import java.util.List;
  * @author guxiu2008
  * @create 2020-02-22 15:28
  **/
-public interface BookRepository extends JpaRepository<BookPojo, String>, JpaSpecificationExecutor {
+public interface BookRepository extends BaseRepository {
     public List<BookPojo> findByName(String bookName);
 }

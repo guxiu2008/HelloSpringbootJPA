@@ -1,7 +1,8 @@
-package com.guxiu2008.hellospringbootjpa.aop;
+package com.guxiu2008.hellospringbootjpa.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -24,11 +25,12 @@ import java.util.Map;
  * @create 2020-02-23 21:11
  **/
 @Slf4j
+@Component
 public class DynamicConditionCreator<T> {
 
-    public Specification getSpecification(T t) {
+    public Specification getSpecificationbyPojo(T t) {
         Map<String, String> mapFieldType = getMapFieldType(t);
-        return getSpecification(t, mapFieldType);
+        return getSpecificationbyPojo(t, mapFieldType);
     }
 
     private Map<String, String> getMapFieldType(T t) {
@@ -48,19 +50,9 @@ public class DynamicConditionCreator<T> {
         return mapFieldType;
     }
 
-    private Specification getSpecification(T t, Map<String, String> mapFieldType) {
+    private Specification getSpecificationbyPojo(T obj, Map<String, String> mapFieldType) {
         Class clazz;
-        Object obj;
-        try {
-            clazz = t.getClass();
-            obj = clazz.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        }
+        clazz = obj.getClass();
         Specification<T> query = new Specification<T>() {
             @Override
             public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
@@ -73,15 +65,19 @@ public class DynamicConditionCreator<T> {
                         methodName.append("get" + entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1));
                         method = clazz.getMethod(methodName.toString(), new Class[]{});
                         Object resultValue = method.invoke(obj, new Object[]{});
+                        log.debug("Obj type: " + entry.getValue());
                         switch (entry.getValue()) {
                             case "java.lang.Integer":
                                 if (resultValue != null) {
-                                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), resultValue));
+                                    predicates.add(criteriaBuilder.like(root.get(entry.getKey()), (String) resultValue));
                                 }
-                                break;
                             case "java.lang.String":
                                 if (!StringUtils.isEmpty(resultValue)) {
-                                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), resultValue));
+                                    if (resultValue.toString().indexOf("%") != -1) {
+                                        predicates.add(criteriaBuilder.like(root.get(entry.getKey()), (String) resultValue));
+                                    } else {
+                                        predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), resultValue));
+                                    }
                                 }
                                 break;
                             default:

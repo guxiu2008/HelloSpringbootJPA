@@ -46,4 +46,10 @@ public class BookController {
     public List<BookPojo> findByName(String bookName) {
         return bookService.findByName(bookName);
     }
+
+    @ApiOperation(value = "获取书本信息", notes="根据表属性名称查询")
+    //@ApiImplicitParam(name = "telephone", value = "电话号码", paramType = "query", required = true, dataType = "Integer")
+    @RequestMapping(value = "findByCondition", method= RequestMethod.POST)
+    @ResponseBody
+    public List<BookPojo> findByCondition(BookPojo bookPojo) {return bookService.findByCondition(bookPojo);}
 }
