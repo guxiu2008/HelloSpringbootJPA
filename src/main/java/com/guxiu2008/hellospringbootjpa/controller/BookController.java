@@ -1,9 +1,8 @@
 package com.guxiu2008.hellospringbootjpa.controller;
 
+import com.guxiu2008.hellospringbootjpa.base.controller.BaseController;
 import com.guxiu2008.hellospringbootjpa.pojo.BookPojo;
-import com.guxiu2008.hellospringbootjpa.pojo.UserPojo;
 import com.guxiu2008.hellospringbootjpa.service.BookService;
-import com.guxiu2008.hellospringbootjpa.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ import java.util.List;
 @Api(description = "用户操作接口")
 @Controller("book")
 @RequestMapping("/book")
-public class BookController {
+public class BookController extends BaseController {
 
     @Autowired
     BookService bookService;
@@ -51,5 +50,15 @@ public class BookController {
     //@ApiImplicitParam(name = "telephone", value = "电话号码", paramType = "query", required = true, dataType = "Integer")
     @RequestMapping(value = "findByCondition", method= RequestMethod.POST)
     @ResponseBody
-    public List<BookPojo> findByCondition(BookPojo bookPojo) {return bookService.findByCondition(bookPojo);}
+    public List<BookPojo> findByCondition(BookPojo bookPojo) {
+        return bookService.findByConditionDefault(bookPojo);
+    }
+
+    @ApiOperation(value = "获取书本信息", notes="忽略id字段查询")
+    //@ApiImplicitParam(name = "telephone", value = "电话号码", paramType = "query", required = true, dataType = "Integer")
+    @RequestMapping(value = "findByConditionIgnoreId", method= RequestMethod.POST)
+    @ResponseBody
+    public List<BookPojo> findByConditionIgnoreId(BookPojo bookPojo) {
+        return bookService.findByConditionIgnoreId(bookPojo);
+    }
 }

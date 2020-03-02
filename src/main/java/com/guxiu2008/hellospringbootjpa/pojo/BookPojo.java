@@ -1,11 +1,15 @@
 package com.guxiu2008.hellospringbootjpa.pojo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
 /**
@@ -18,12 +22,13 @@ import java.util.Objects;
 @Slf4j
 @Entity
 @Table(name = "book", schema = "jpa", catalog = "")
+@ApiModel(description= "书本信息表")
 public class BookPojo {
     @Id
     @Getter
     @Setter
     @Column(name = "id", nullable = false)
-    private String id;
+    private int id;
 
     @Getter
     @Setter
@@ -38,6 +43,7 @@ public class BookPojo {
     @Getter
     @Setter
     @Column(name = "date", nullable = true)
+    @ApiModelProperty(value = "时间. 类型为Date. 实例: 2020-02-23 00:00:00")
     private String date;
 
     @Override

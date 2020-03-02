@@ -13,7 +13,7 @@
         <property name="FILE_PATH" value="D:/code/log4j2test" />
         <property name="PROJECT_NAME" value="HelloSpringbootJPA" />
         <!-- 定义终端输出和日志文件输出的level-->
-        <property name="CONSOLE_LEVEL" value="debug" />
+        <property name="CONSOLE_LEVEL" value="trace" />
         <property name="LOGFILE_LEVEL" value="debug" />
         <property name="ROLLING_LEVEL" value="debug" />
     </Properties>

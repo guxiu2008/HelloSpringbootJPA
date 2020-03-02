@@ -35,4 +35,9 @@ public class BookService extends BaseService {
     public List<BookPojo> findByName(String bookName) {
         return bookRepository.findByName(bookName);
     }
+
+    public List<BookPojo> findByConditionIgnoreId(BookPojo bookPojo) {
+        this.dynamicConditionCreator.addDefaultIgnoreField("id");
+        return bookRepository.findAll(this.dynamicConditionCreator.getSpecificationbyPojo(bookPojo));
+    }
 }
