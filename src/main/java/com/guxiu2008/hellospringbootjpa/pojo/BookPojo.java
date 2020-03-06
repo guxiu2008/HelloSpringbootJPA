@@ -23,12 +23,12 @@ import java.util.Objects;
 @Entity
 @Table(name = "book", schema = "jpa", catalog = "")
 @ApiModel(description= "书本信息表")
-public class BookPojo {
+public class BookPojo extends BasePojo {
     @Id
     @Getter
     @Setter
     @Column(name = "id", nullable = false)
-    private int id;
+    private String id;
 
     @Getter
     @Setter

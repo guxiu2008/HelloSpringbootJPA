@@ -70,7 +70,7 @@
 
         <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
 
-        <root level="info">
+        <root level="INFO">
             <appender-ref ref="Console"/>
             <appender-ref ref="Filelog"/>
             <appender-ref ref="RollingFileInfo"/>

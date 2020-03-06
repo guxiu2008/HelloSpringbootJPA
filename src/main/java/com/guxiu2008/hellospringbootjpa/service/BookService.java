@@ -1,13 +1,17 @@
 package com.guxiu2008.hellospringbootjpa.service;
 
-import com.guxiu2008.hellospringbootjpa.base.service.BaseService;
 import com.guxiu2008.hellospringbootjpa.pojo.BookPojo;
 import com.guxiu2008.hellospringbootjpa.repository.BookRepository;
+import com.guxiu2008.hellospringbootjpa.util.DynamicConditionCreator;
+import com.guxiu2008.hellospringbootjpa.util.DynamicSortCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -19,14 +23,16 @@ import java.util.List;
  **/
 @Slf4j
 @Service
-public class BookService extends BaseService {
+public class BookService {
+
+    @Autowired
+    DynamicConditionCreator dynamicConditionCreator;
+
+    @Autowired
+    DynamicSortCreator dynamicSortCreator;
+
     @Autowired
     private BookRepository bookRepository;
-
-    @PostConstruct
-    public void initBaseRepository() {
-        super.setBaseRepository(bookRepository);
-    }
 
     public List<BookPojo> findAll() {
         return bookRepository.findAll();
@@ -36,8 +42,12 @@ public class BookService extends BaseService {
         return bookRepository.findByName(bookName);
     }
 
-    public List<BookPojo> findByConditionIgnoreId(BookPojo bookPojo) {
-        this.dynamicConditionCreator.addDefaultIgnoreField("id");
+    public List<BookPojo> findByConditionDefault(BookPojo bookPojo) {
         return bookRepository.findAll(this.dynamicConditionCreator.getSpecificationbyPojo(bookPojo));
+    }
+
+    public Page<BookPojo> findByConditionDefaultPage(BookPojo bookPojo, Pageable pageable) {
+        //Sort sort = this.dynamicSortCreator.getSort(bookPojo.getListDescField(), bookPojo.getListAscField());
+        return bookRepository.findAll(this.dynamicConditionCreator.getSpecificationbyPojo(bookPojo), pageable);
     }
 }

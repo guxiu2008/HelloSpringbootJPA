@@ -111,6 +111,11 @@ public class DynamicConditionCreator<T> {
             method = clazz.getMethod(methodName.toString(), new Class[]{});
             Object resultValue = method.invoke(obj, new Object[]{});
             log.debug("Obj type: " + entry.getValue());
+
+            if (entry.getValue().indexOf("List") != -1) {
+                continue;
+            }
+
             if (entry.getValue().indexOf("String") != -1
                     && !StringUtils.isEmpty(resultValue)
                     && resultValue.toString().indexOf("%") != -1) {
