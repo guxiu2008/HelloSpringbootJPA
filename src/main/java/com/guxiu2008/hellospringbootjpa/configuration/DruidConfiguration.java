@@ -1,14 +1,17 @@
 package com.guxiu2008.hellospringbootjpa.configuration;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Package: com.guxiu2008.hellospringbootjpa.configuration
@@ -21,89 +24,30 @@ import java.sql.SQLException;
 @Configuration
 public class DruidConfiguration {
 
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
+    @Value("${spring.druid.exceptionSorter}")
+    private String exceptionSorter;
 
-    @Value("${spring.datasource.username}")
-    private String username;
-
-    @Value("${spring.datasource.password}")
-    private String password;
-
-    @Value("${spring.datasource.driverClassName}")
-    private String driverClassName;
-
-    @Value("${spring.datasource.initialSize}")
-    private int initialSize;
-
-    @Value("${spring.datasource.minIdle}")
-    private int minIdle;
-
-    @Value("${spring.datasource.maxActive}")
-    private int maxActive;
-
-    @Value("${spring.datasource.maxWait}")
-    private int maxWait;
-
-    @Value("${spring.datasource.timeBetweenEvictionRunsMillis}")
-    private int timeBetweenEvictionRunsMillis;
-
-    @Value("${spring.datasource.minEvictableIdleTimeMillis}")
-    private int minEvictableIdleTimeMillis;
-
-    @Value("${spring.datasource.validationQuery}")
-    private String validationQuery;
-
-    @Value("${spring.datasource.testWhileIdle}")
-    private boolean testWhileIdle;
-
-    @Value("${spring.datasource.testOnBorrow}")
-    private boolean testOnBorrow;
-
-    @Value("${spring.datasource.testOnReturn}")
-    private boolean testOnReturn;
-
-    @Value("${spring.datasource.poolPreparedStatements}")
-    private boolean poolPreparedStatements;
-
-    @Value("${spring.datasource.maxPoolPreparedStatementPerConnectionSize}")
-    private int maxPoolPreparedStatementPerConnectionSize;
-
-    @Value("${spring.datasource.filters}")
+    @Value("${spring.druid.filters}")
     private String filters;
 
-    @Value("{spring.datasource.connectionProperties}")
-    private String connectionProperties;
+    @Value("${spring.druid.password-callback}")
+    private String passwordCallbackClassName;
 
     @Bean
-    @Primary
-    public DataSource dataSource() {
-        DruidDataSource datasource = new DruidDataSource();
-        log.info("----------- druid datasource ----------");
-        datasource.setUrl(this.dbUrl);
-        datasource.setUsername(username);
-        datasource.setPassword(password);
-        datasource.setDriverClassName(driverClassName);
-
-        datasource.setInitialSize(initialSize);
-        datasource.setMinIdle(minIdle);
-        datasource.setMaxActive(maxActive);
-        datasource.setMaxWait(maxWait);
-        datasource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-        datasource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-        datasource.setValidationQuery(validationQuery);
-        datasource.setTestWhileIdle(testWhileIdle);
-        datasource.setTestOnBorrow(testOnBorrow);
-        datasource.setTestOnReturn(testOnReturn);
-        datasource.setPoolPreparedStatements(poolPreparedStatements);
-        datasource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
+    //@Primary
+    // 扫描application.yml中的spring.datasource.primary并配置到DruidDataSource中
+    @ConfigurationProperties(prefix="spring.datasource.primary")
+    public DataSource primaryDataSource() {
+        log.info("Creating the primary DataBase connection pool...");
+        //DruidDataSource dataSource = new DruidDataSource();
+        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
         try {
-            datasource.setFilters(filters);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            dataSource.setExceptionSorter(exceptionSorter);
+            dataSource.setFilters(filters);
+            dataSource.setPasswordCallbackClassName(passwordCallbackClassName);
+        } catch (Exception e) {
+            log.error("druid configuration initialization error", e);
         }
-        datasource.setConnectionProperties(connectionProperties);
-
-        return datasource;
+        return dataSource;
     }
 }
