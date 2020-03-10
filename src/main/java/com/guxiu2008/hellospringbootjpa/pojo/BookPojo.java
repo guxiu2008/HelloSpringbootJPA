@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -45,19 +42,4 @@ public class BookPojo extends BasePojo {
     @Column(name = "date", nullable = true)
     @ApiModelProperty(value = "时间. 类型为Date. 实例: 2020-02-23 00:00:00")
     private String date;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BookPojo bookPojo = (BookPojo) o;
-        return Objects.equals(id, bookPojo.id) &&
-                Objects.equals(name, bookPojo.name) &&
-                Objects.equals(userid, bookPojo.userid);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, userid);
-    }
 }

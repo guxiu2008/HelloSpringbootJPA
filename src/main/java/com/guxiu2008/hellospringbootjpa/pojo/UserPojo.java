@@ -1,8 +1,11 @@
 package com.guxiu2008.hellospringbootjpa.pojo;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,65 +18,41 @@ import java.util.Objects;
 @Slf4j
 @Entity
 @Table(name = "user", schema = "jpa", catalog = "")
-public class UserPojo {
-    private Integer id;
-    private String name;
-    private Integer age;
-    private String address;
+public class UserPojo extends BasePojo {
 
     @Id
+    @Setter
+    @Getter
     @Column(name = "id", nullable = false)
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private Integer id;
 
     @Basic
+    @Setter
+    @Getter
     @Column(name = "name", nullable = true, length = 255)
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    private String name;
 
     @Basic
+    @Setter
+    @Getter
     @Column(name = "age", nullable = true)
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
+    private Integer age;
 
     @Basic
+    @Setter
+    @Getter
     @Column(name = "address", nullable = true, length = 255)
-    public String getAddress() {
-        return address;
-    }
+    private String address;
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserPojo userPojo = (UserPojo) o;
-        return Objects.equals(id, userPojo.id) &&
-                Objects.equals(name, userPojo.name) &&
-                Objects.equals(age, userPojo.age) &&
-                Objects.equals(address, userPojo.address);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, age, address);
-    }
+    @Getter
+    @Setter
+    /*
+        CascadeType.PERSIST （级联保存） 保存实体也保存关联对象；
+        CascadeType.REMOVE （级联删除） 删除实体也删除关联对象；
+        CascadeType.REFRESH （级联刷新） 刷新实体时也刷新关联对象；
+        CascadeType.MERGE （级联更新）更新实体也更新关联对象。 或者使用CascadeType.ALL，表示选择全部四项
+     */
+    @OneToMany(targetEntity = BookPojo.class, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "userid")
+    private List<BookPojo> bookPojo;
 }

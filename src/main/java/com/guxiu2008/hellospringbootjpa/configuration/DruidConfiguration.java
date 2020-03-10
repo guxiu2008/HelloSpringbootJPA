@@ -35,11 +35,10 @@ public class DruidConfiguration {
 
     @Bean
     //@Primary
-    // 扫描application.yml中的spring.datasource.primary并配置到DruidDataSource中
-    @ConfigurationProperties(prefix="spring.datasource.primary")
+    // 扫描application.yml中的spring.datasource并配置到DruidDataSource中
+    @ConfigurationProperties(prefix="spring.datasource")
     public DataSource primaryDataSource() {
         log.info("Creating the primary DataBase connection pool...");
-        //DruidDataSource dataSource = new DruidDataSource();
         DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
         try {
             dataSource.setExceptionSorter(exceptionSorter);
